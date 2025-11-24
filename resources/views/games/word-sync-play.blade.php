@@ -121,7 +121,7 @@
                 }
 
                 // Sync timer with server (but don't override if close)
-                
+
 
                 if (data.previous_round) {
                     previousWords = data.previous_round;
@@ -176,24 +176,25 @@
                 </div>
 
                 <div class="bg-gray-800 rounded-xl p-8">
-                    <h2 class="text-2xl font-bold text-center mb-6">Enter Your Word</h2>
-                    <div class="flex gap-4 justify-center">
-                        <input
-                            type="text"
-                            id="word-input"
-                            placeholder="Type your word..."
-                            class="bg-gray-700 px-6 py-4 rounded-lg w-96 text-center text-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            maxlength="30"
-                            autofocus
-                        >
-                        <button id="submit-btn" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-bold transition">
-                            Submit →
-                        </button>
-                    </div>
-                    <p class="text-gray-400 text-sm text-center mt-4">
-                        ${currentRound === 1 ? 'Enter any word you like!' : 'Think of a word that connects both previous words!'}
-                    </p>
-                </div>
+    <h2 class="text-2xl font-bold text-center mb-6">Enter Your Word</h2>
+    <div class="flex flex-col gap-4 items-center"> <!-- change here -->
+        <input
+            type="text"
+            id="word-input"
+            placeholder="Type your word..."
+            class="bg-gray-700 px-6 py-4 rounded-lg w-96 text-center text-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            maxlength="30"
+            autofocus
+        >
+        <button id="submit-btn" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-bold transition">
+            Submit →
+        </button>
+    </div>
+    <p class="text-gray-400 text-sm text-center mt-4">
+        ${currentRound === 1 ? 'Enter any word you like!' : 'Think of a word that connects both previous words!'}
+    </p>
+</div>
+
             `;
 
             document.getElementById('game-container').innerHTML = html;
