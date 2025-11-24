@@ -120,21 +120,8 @@
                     return;
                 }
 
-                // Update timer display (only if not submitted and showing timer)
-                const timerEl = document.getElementById('timer');
-                if (timerEl && !wordSubmitted) {
-                    timerEl.textContent = data.time_remaining;
-
-                    if (data.time_remaining <= 5) {
-                        timerEl.classList.add('text-red-500');
-                        timerEl.classList.remove('text-yellow-400');
-                    }
-
-                    if (data.time_remaining <= 0 && !wordSubmitted) {
-                        const wordInput = document.getElementById('word-input');
-                        submitWord(wordInput ? wordInput.value : '');
-                    }
-                }
+                // Sync timer with server (but don't override if close)
+                
 
                 if (data.previous_round) {
                     previousWords = data.previous_round;
@@ -146,7 +133,15 @@
         }
 
         // Show input screen
+        let clientTimerInterval = null;
+
         function showInputScreen(timeRemaining = 20, prevWords = null) {
+            // Clear any existing client timer
+            if (clientTimerInterval) {
+                clearInterval(clientTimerInterval);
+                clientTimerInterval = null;
+            }
+
             let html = `
                 <div class="text-center mb-8">
                     <div class="inline-block bg-gray-800 px-6 py-3 rounded-full">
@@ -205,14 +200,37 @@
 
             const wordInput = document.getElementById('word-input');
             const submitBtn = document.getElementById('submit-btn');
+            const timerEl = document.getElementById('timer');
 
             submitBtn.addEventListener('click', () => submitWord(wordInput.value));
             wordInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') submitWord(wordInput.value);
             });
+
+            // Start client-side countdown
+            let localTime = timeRemaining;
+            clientTimerInterval = setInterval(() => {
+                if (!wordSubmitted && timerEl) {
+                    localTime--;
+
+                    if (localTime < 0) localTime = 0;
+
+                    timerEl.textContent = localTime;
+
+                    if (localTime <= 5) {
+                        timerEl.classList.add('text-red-500');
+                        timerEl.classList.remove('text-yellow-400');
+                    }
+
+                    if (localTime <= 0 && !wordSubmitted) {
+                        clearInterval(clientTimerInterval);
+                        submitWord(wordInput ? wordInput.value : '');
+                    }
+                }
+            }, 1000);
         }
 
-        // Submit word
+
         async function submitWord(word) {
             if (wordSubmitted) return;
 
@@ -222,6 +240,12 @@
             }
 
             wordSubmitted = true;
+
+            // Clear client timer
+            if (clientTimerInterval) {
+                clearInterval(clientTimerInterval);
+                clientTimerInterval = null;
+            }
 
             try {
                 const response = await fetch('/game/submit-word', {

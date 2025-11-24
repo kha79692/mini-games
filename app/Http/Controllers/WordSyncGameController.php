@@ -68,6 +68,14 @@ class WordSyncGameController extends Controller
 
         // Check if both players submitted
         if ($round->player1_submitted && $round->player2_submitted) {
+            $word1 = strtolower(trim($round->player1_word));
+            $word2 = strtolower(trim($round->player2_word));
+
+            // Check if words match AND are not empty/placeholder
+            $matched = ($word1 === $word2) &&
+                       ($word1 !== '') &&
+                       ($word1 !== '[no word]');
+
             return response()->json([
                 'success' => true,
                 'both_submitted' => true,
@@ -75,10 +83,9 @@ class WordSyncGameController extends Controller
                     'player1' => $round->player1_word,
                     'player2' => $round->player2_word
                 ],
-                'matched' => strtolower($round->player1_word) === strtolower($round->player2_word)
+                'matched' => $matched
             ]);
         }
-
         return response()->json([
             'success' => true,
             'both_submitted' => false,
@@ -108,6 +115,14 @@ class WordSyncGameController extends Controller
         }
 
         if ($round->player1_submitted && $round->player2_submitted) {
+            $word1 = strtolower(trim($round->player1_word));
+            $word2 = strtolower(trim($round->player2_word));
+
+            // Check if words match AND are not empty/placeholder
+            $matched = ($word1 === $word2) &&
+                       ($word1 !== '') &&
+                       ($word1 !== '[no word]');
+
             return response()->json([
                 'success' => true,
                 'both_submitted' => true,
@@ -115,7 +130,7 @@ class WordSyncGameController extends Controller
                     'player1' => $round->player1_word,
                     'player2' => $round->player2_word
                 ],
-                'matched' => strtolower($round->player1_word) === strtolower($round->player2_word),
+                'matched' => $matched,
                 'current_round' => $session->current_round
             ]);
         }
